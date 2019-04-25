@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import inpForm from './form';
-import { Firebase, firebase } from 'firebase';
-import "../firebaseDB";
+import DataForm from './form';
+import { firebaseDB, firebase, googleAuth } from '../firebaseDb';
 import Home from './home';
 
 
@@ -11,7 +10,7 @@ class Movie extends Component{
     constructor(){
         super();
         this.state = {
-            firstname: "",
+            firstName: "",
             email: "",
             long:"",
             lat:"",
@@ -23,9 +22,15 @@ class Movie extends Component{
     }
 
 }
-
+    
     componentDidMount(){
-            fetch("htttp://googleweatherapi")
+
+        firebase.auth().onAuthStateChanged(user =>{
+            this.setState({
+                isLogin: user? true: false
+            })
+           })
+            fetch("https://www.google.com/maps/embed/v1/MODE?")  // Unable to get the Googlemap Api key billing setup
                 .then(response => response.json()
                     .then(data =>{
                         this.setState({
@@ -35,7 +40,7 @@ class Movie extends Component{
                 )
     
 
-    }
+    } 
 
 
     handleForm = (event)=>{
@@ -46,36 +51,45 @@ class Movie extends Component{
         })
     }
 
-    handleClick = (event) => {
+    handleSubmit = (event) => {
         event.preventDefault();
-        let data = this.state;
-        Firebase.database()
-        .set(data);
+        const data = this.state;
+        firebaseDB.ref('users').push(data)
+        .then(()=>{
+            console.log('new user added');
+        })
         this.setState({isReport: true})
+        this.setState({
+            firstName: "",
+            email: ""
+
+        })
+
+      
+        this.setState(prevState =>{ 
+            return{
+             crimeNum: prevState.crimeNum + 1
+            } 
+         }
+     )
 
     }
 
     login = ()=>{
-        let provider = new firebase.auth.GoogleAuthProvider();
-        provider.setCustomerParameter();
+        
+       firebase.auth().signInWithPopup(googleAuth);
+             
+    }
+
+    signOut = () =>{
+        firebase.auth().signOut();
         this.setState({
-            isLogin: true
+            isLogin:false
         })
     }
 
     
-    handleCrime = () =>{
-
-        if(this.state.isReport){
-            this.setState(prevState => 
-                {
-                    crimeNum: prevState.crimeNum + 1
-                }
-            )
-        }
-
-    }
-
+  
   
 
 
@@ -83,11 +97,16 @@ class Movie extends Component{
 
         const dataItem = this.state;
 
-        const dataValue = this.state.weathLocate.map(item => <inpForm key={item.id} items={item} 
-            formD ={dataItem} handleForm={ this.handleForm}
-            handleClick= {this.handleClick}
-            handleCrime = {this.handleCrime}
-            />) ;
+        const dataValue = <DataForm
+            formd ={dataItem} handleform={ this.handleForm}
+            handlesubmit= {this.handleSubmit} signout={this.signOut}
+            />
+
+      //  const dataValue = this.state.weathLocate.map(item => <inpForm key={item.id} items={item} 
+       //     formD ={dataItem} handleForm={ this.handleForm}
+       //     handleSubmit= {this.handleSubmit}
+       //     handleCrime = {this.handleCrime}
+       //     />) ;
 
            const access =this.state.isLogin? dataValue :  <Home login={this.login} />  ;
         return(

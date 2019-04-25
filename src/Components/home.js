@@ -2,15 +2,21 @@ import React from 'react';
 import '../firebaseDb';
 
 
+
 const Home = (props) =>{
 
     
     return(
-
         <div>
-            <button onClick= {props.login}>Signing</button>
+            
+            <div className="logContainer">
+            <h1> CrimeApp</h1>
+            <button className="btn" onClick= {props.login}>Sign in</button>
 
             </div>
+
+        </div>
+     
     )
 }
 

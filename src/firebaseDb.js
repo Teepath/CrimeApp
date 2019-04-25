@@ -1,6 +1,6 @@
-import { firebase} from "firebase";
+import * as firebase from 'firebase';
 
-const  config = {
+const config = {
     apiKey: "AIzaSyAAeCMkoXRZTUJsi-tz9Cf9zzcKO-SgfDA",
     authDomain: "newapp-53f70.firebaseapp.com",
     databaseURL: "https://newapp-53f70.firebaseio.com",
@@ -10,4 +10,14 @@ const  config = {
   };
   firebase.initializeApp(config);
 
-  export default config;
+  const firebaseDB = firebase.database();
+  const googleAuth = new firebase.auth.GoogleAuthProvider();
+
+  export{
+    firebase,
+    firebaseDB,
+    googleAuth
+  }
+  
+  
+  //firebaseDB.ref().set('it works 2');
