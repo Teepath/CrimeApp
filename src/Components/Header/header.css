@@ -1,0 +1,20 @@
+.logo{
+    width: 20px;
+    height: 30px;
+}
+
+.bars{
+    margin-top: 15px;
+    height: 50px;
+}
+
+header{
+    display: flex;
+    justify-content: flex-start;
+    background-color: #242424;
+}
+
+.headerOpt{
+    padding: 10px;
+    margin-top: 20px;
+}
